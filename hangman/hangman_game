@@ -1,0 +1,160 @@
+import random
+
+# Word categories
+word_categories = {
+    'animals': ['elephant', 'giraffe', 'tiger', 'zebra', 'kangaroo'],
+    'countries': ['argentina', 'germany', 'canada', 'australia', 'india'],
+    'movies': ['inception', 'gladiator', 'titanic', 'avatar', 'interstellar']
+}
+
+# Hangman stages using ASCII art
+hangman_stages = [
+    """
+      -----
+      |   |
+          |
+          |
+          |
+          |
+    --------
+    """,
+    """
+      -----
+      |   |
+      O   |
+          |
+          |
+          |
+    --------
+    """,
+    """
+      -----
+      |   |
+      O   |
+      |   |
+          |
+          |
+    --------
+    """,
+    """
+      -----
+      |   |
+      O   |
+     /|   |
+          |
+          |
+    --------
+    """,
+    """
+      -----
+      |   |
+      O   |
+     /|\\  |
+          |
+          |
+    --------
+    """,
+    """
+      -----
+      |   |
+      O   |
+     /|\\  |
+     /    |
+          |
+    --------
+    """,
+    """
+      -----
+      |   |
+      O   |
+     /|\\  |
+     / \\  |
+          |
+    --------
+    """
+]
+
+# Function to choose a category
+def choose_category():
+    print("Choose a category: ")
+    print("1. Animals")
+    print("2. Countries")
+    print("3. Movies")
+    
+    try:
+        choice = int(input("Enter your choice (1, 2, 3): "))
+        if choice == 1:
+            return random.choice(word_categories['animals'])
+        elif choice == 2:
+            return random.choice(word_categories['countries'])
+        elif choice == 3:
+            return random.choice(word_categories['movies'])
+        else:
+            print("Invalid choice. Defaulting to 'Animals' category.")
+            return random.choice(word_categories['animals'])
+    except ValueError:
+        print("Invalid input. Defaulting to 'Animals' category.")
+        return random.choice(word_categories['animals'])
+
+# Function to display the hangman stage
+def print_hangman_stage(stage):
+    print(hangman_stages[stage])
+
+# Function to choose difficulty level
+def choose_difficulty():
+    print("Choose difficulty level:")
+    print("1. Easy (10 guesses)")
+    print("2. Medium (7 guesses)")
+    print("3. Hard (5 guesses)")
+    
+    try:
+        difficulty = int(input("Enter your choice: "))
+        if difficulty == 1:
+            return 10  # Easy mode
+        elif difficulty == 2:
+            return 7   # Medium mode
+        elif difficulty == 3:
+            return 5   # Hard mode
+        else:
+            print("Invalid choice. Defaulting to Easy mode.")
+            return 10
+    except ValueError:
+        print("Invalid input. Defaulting to Easy mode.")
+        return 10
+
+# Main Hangman game function
+def hangman_game():
+    word = choose_category()  # Randomly selects a word based on the chosen category
+    max_incorrect_guesses = choose_difficulty()
+    guessed_letters = []  # To store correctly guessed letters
+    incorrect_guesses = 0  # To track incorrect guesses
+
+    print("\nGame Start! Good luck!\n")
+    
+    while incorrect_guesses < max_incorrect_guesses:
+        print_hangman_stage(incorrect_guesses)  # Show current hangman stage
+        display_word = ''.join([char if char in guessed_letters else '_' for char in word])  # Show word progress
+        print(f"Word: {display_word}")
+        
+        if display_word == word:  # If the player has guessed all letters
+            print("Congratulations! You've guessed the word!")
+            break
+        
+        guess = input("Guess a letter: ").lower()
+        
+        if len(guess) != 1:  # Ensure only one letter is guessed at a time
+            print("Please enter only one letter.")
+        elif guess in guessed_letters:
+            print(f"You already guessed '{guess}'. Try another letter.")
+        elif guess in word:
+            guessed_letters.append(guess)
+        else:
+            print(f"Wrong guess! '{guess}' is not in the word.")
+            incorrect_guesses += 1
+    
+    if incorrect_guesses == max_incorrect_guesses:  # Player ran out of guesses
+        print_hangman_stage(incorrect_guesses)
+        print(f"Game Over! The word was '{word}'.")
+
+# Run the game
+hangman_game()
